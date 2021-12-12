@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	   <meta charset="utf-8">
+	   <title>Leaflet Map</title>
+	   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css"/>
+</head>
+<body>
+    <!-- Our web map and content will go here -->
+        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <div id="map" style="width: 1000px; height: 600px">
+        </div>
+        <script>
+    	var map = L.map('map', {center: [39.9773005633434, -75.15869277139471], zoom: 10});
+    	L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+    	map.doubleClickZoom.disable();
+        // add point marker
+        var myDataPoint = L.marker([39.981192, -75.155399]).addTo(map);
+        myDataPoint.bindPopup("This is Rite Aid.");
+        myDataPoint.bindPopup("<h3>Rite Aid</h3><p>Philadelphia, PA<br>COVID Vaccinations Avaliable.</p>");
+        var myDataPoint = L.marker([39.97878863806405, -75.15355365893997]).addTo(map);
+        myDataPoint.bindPopup("This is CVS Pharmacy.");
+        myDataPoint.bindPopup("<h3>CVS</h3><p>Philadelphia, PA<br>COVID Vaccinations Avaliable.</p>");   
+        var myDataPoint = L.marker([39.9686534945777, -75.16288847396147]).addTo(map);
+        myDataPoint.bindPopup("This is Solace Pharmacy.");
+        myDataPoint.bindPopup("<h3>Solace Pharmacy</h3><p>Philadelphia, PA<br>COVID Vaccinations Avaliable.</p>");   
+        var myDataPoint = L.marker([39.96697672061243, -75.16079147287846]).addTo(map);
+        myDataPoint.bindPopup("This is Ridge Discount Pharmacy.");
+        myDataPoint.bindPopup("<h3>Ridge Discount Pharmacy</h3><p>Philadelphia, PA<br>COVID Vaccinations Avaliable.</p>");   
+        var myDataPoint = L.marker([39.96902682329406, -75.13898012362475]).addTo(map);
+        myDataPoint.bindPopup("This is Acme Pharmacy.");
+        myDataPoint.bindPopup("<h3>Acme Pharmacy</h3><p>Philadelphia, PA<br>COVID Vaccinations Avaliable.</p>");
+        // create a polygon of Philadelphia metro
+        var myArea = L.polygon([[40.134261, -75.270050],
+             [40.138132, -74.888837],
+             [39.873212, -74.988837],
+             [39.859046, -75.377775]
+             ],
+             {color: 'blue', weight: 1}).addTo(map);
+             
+// Bind popup to area object
+myArea.bindPopup("Philadelphia metro");   
+// Create an Empty Popup
+        var popup = L.popup();
+// Write function to set Properties of the Popup
+        function onMapClick(e) {
+        popup
+        .setLatLng(e.latlng)
+        .setContent("You clicked the map at " + e.latlng.toString())
+        .openOn(map);
+}
+
+// Listen for a click event on the Map element
+        map.on('click', onMapClick);
+// load GeoJSON from an external file
+        $.getJSON("vaccines.geojson",function(data){
+    // add GeoJSON layer to the map once the file is loaded
+        L.geoJson(data, {
+        onEachFeature: function(feature, layer){
+            layer.bindPopup('Covid Vaccine Percentages: '+feature.properties.dose1_perc);
+        }
+        }).addTo(map);
+});
+        </script>
+        
+</body>
+</html>
